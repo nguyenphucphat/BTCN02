@@ -1,0 +1,385 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Jost", sans-serif;
+}
+
+body {
+  width: 100%;
+  margin: 0;
+}
+
+#container {
+  margin: 0 auto;
+  width: 1200px;
+  background-color: #ccc;
+  padding-top: 6px;
+  padding-bottom: 2px;
+}
+
+#header {
+  margin: 0 6px 6px 6px;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px;
+  border-radius: 5px;
+}
+
+.title {
+  font-size: 28px;
+}
+
+.rightOfHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.fs15 {
+  font-size: 15px;
+}
+
+.darkMode {
+  display: flex;
+  margin-top: 18px;
+}
+
+.darkModeBtn {
+  padding-right: 8px;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+.labelDarkMode {
+  display: inline-block;
+  width: 50px;
+  height: 25px;
+  background-color: #ccc;
+  border-radius: 25px;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked + .labelDarkMode {
+  background-color: #4caf50;
+}
+
+.labelDarkMode:after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  top: 2.5px;
+  transition: 0.4s;
+}
+
+input[type="checkbox"]:checked + .labelDarkMode:after {
+  transform: translateX(25px);
+}
+
+.searchMoviePage {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.searchMovie {
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 350px;
+  margin: 16px;
+}
+
+.searchMovieImg {
+  width: 100%;
+  height: 440px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.searchMovieInfo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.searchMovieName {
+  font-size: 14px;
+  padding: 4px 8px;
+  color: white;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.paginationSearch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.searchActive {
+  background-color: #198754 !important;
+  color: white !important;
+  outline: none !important;
+}
+
+.paginationSearchBtn {
+  border: none;
+  width: 30px;
+  height: 30px;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 4px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+button:focus {
+  outline: none;
+}
+/* ----------------------------loading------------------------------ */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* --------------------------------------------------------------------------------------------- */
+#nav {
+  margin: 8px 6px 6px;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px;
+  border-radius: 5px;
+}
+
+.homeBtn {
+  padding: 4px;
+}
+
+.homeBtn:hover {
+  cursor: pointer;
+}
+.searchWrap {
+  padding: 2px;
+}
+.searchInput {
+  padding: 8px;
+  width: 210px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.searchBtn {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #198754;
+  margin-left: 4px;
+  background-color: white;
+}
+
+.searchBtn:hover {
+  cursor: pointer;
+  background-color: #198754;
+  color: white;
+}
+/* ----------------------------------------------------------------------- */
+.star {
+  cursor: pointer;
+}
+.bigTitle {
+  font-size: 34px;
+  font-weight: 600;
+  margin: 0 auto;
+  color: #d03526;
+}
+.filmDetail {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+}
+.filmDetailImg {
+  width: 350px;
+  height: 480px;
+  border-radius: 5px;
+  padding: 16px;
+}
+
+.filmDetailInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detailTitle {
+  font-size: 20px;
+  font-weight: 600;
+  padding: 6px;
+}
+
+.detailTitle span {
+  font-weight: 500;
+  padding: 6px;
+}
+
+.commentTitle {
+  font-size: 24px;
+  font-weight: 600;
+  padding: 6px;
+}
+/* -------------------------------------------------------------------------------------- */
+.lastedMovies {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.lastedMovieInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.lastedMovieName {
+  font-size: 18px;
+  padding: 12px 0;
+}
+
+.lastedMovieImg {
+  width: 350px;
+  height: 480px;
+  border-radius: 5px;
+}
+
+.movieBtn {
+  padding: 8px;
+}
+
+.movieBtn:hover {
+  cursor: pointer;
+}
+
+.movieBtn svg {
+  fill: #e5e5e5;
+  font-size: 40px;
+}
+/* ------------------------------------------------------------------------------------- */
+.mainTitle {
+  font-size: 20px;
+  font-weight: 600;
+  padding: 6px;
+}
+
+.page3film {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.popularMovieImg {
+  width: 350px;
+  height: 300px;
+  border-radius: 16px;
+  padding: 5px;
+}
+
+.popularMovieInfo:hover .popularMovieImg {
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+.popularMovieInfo:hover .popularMovieName {
+  display: block;
+  transform: scale(1.172);
+  margin-top: 16px;
+  border-radius: 4px;
+}
+
+.popularMovieName {
+  font-size: 14px;
+  padding: 8px 8px;
+  background-color: black;
+  color: white;
+  display: none;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 100px;
+}
+
+.pagActive {
+  background-color: white !important;
+}
+.paginationBtn {
+  width: 22px;
+  height: 6px;
+  background-color: #ccc;
+  border-radius: 5px;
+  border: 1px solid #000;
+  margin: 2px;
+}
+
+/* ---------------------------------------------------------------------------------------- */
+#footer {
+  margin: 8px;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px;
+  border-radius: 5px;
+}
