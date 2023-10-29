@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Basics</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="container">
+      <div id="header">
+        <div class="mssv fs15">21120521</div>
+        <h2 class="title">Movies info</h2>
+        <section class="rightOfHeader">
+          <div class="keyApi fs15"><210521></div>
+          <div class="darkMode">
+            <section class="darkModeBtn">
+              <input type="checkbox" id="toggle-switch" />
+              <label for="toggle-switch" class="labelDarkMode"></label>
+            </section>
+            <div class="darkModeBtnName fs15">Dark Mode</div>
+          </div>
+        </section>
+      </div>
+
+      <div id="nav">
+        <div class="homeBtn" @click="returnHome">Home</div>
+        <div v-if="isLoading" class="loading-overlay">
+            <div class="loader"></div>
+          </div>
+        <section class="searchWrap">
+          <input type="text" class="searchInput" placeholder="Search" v-model="search" @blur="onSearchInput" />
+          <button @click="searchMovie" class="searchBtn">Search</button>
+        </section>
+      </div>
+
+      <div class="searchMovieWrap" v-show="isSearch === true" >
+        <div v-show="isSearch === true" class="searchMoviePage">
+            <div v-for="movie in searchResult" class="searchMovie" @click="showFilm(movie)">
+                <img :src="movie.image" alt="" class="searchMovieImg">
+                <div class="searchMovieInfo">
+                    <div class="searchMovieName">{{ movie.title }}</div>
+                    <div class="searchMovieName">{{ movie.year }}</div>
+                </div>
+            
+            </div>
+          </div>
+
+          <div class="paginationSearch">
+            <div class="paginationSearchBtn" @click="prevSearchPage" :disabled="searchCurrentPage === 1">
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="1em"
+                viewBox="0 0 320 512"
+              >
+                <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path
+                  d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"
+                />
+              </svg>
+            </div>
+            <button
+            class="paginationSearchBtn"
+              v-for="page in displayedSearchPages"
+              :key="page"
+              @click="goToSearchPage(page)"
+              :class="{ searchActive: searchCurrentPage === page }"
+            >{{ page }}</button>
+            <div class="paginationSearchBtn" @click="nextSearchPage" :disabled="searchCurrentPage === searchTotalPage">
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="1em"
+                viewBox="0 0 320 512"
+              >
+                <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path
+                  d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"
+                />
+              </svg>
+            </div>
+      </div>
+    </div>
+    
+    <div v-show="isFilm === true" class="filmDetail">
+        <div class="bigTitle">Movie Detail Information</div>
+        <div class="filmDetailInfo">
+            <img :src="filmDetail.image" alt="" class="filmDetailImg">
+            <section class="detail">
+                <div class="detailTitle">Name:
+                    <span>{{filmDetail.title}}.</span> </div>
+                <div class="detailTitle">Year:
+                    <span> {{filmDetail.year}}.</span> </div>
+                <div class="detailTitle">Rating:
+                    <span>{{imDb}}.</span> </div>
+                <div class="detailTitle">Director: 
+                    <span v-for="(director,index) in filmDetail.directorList" class="detailTitle">
+                       <span> {{director.name}}</span>
+                        <span v-if="filmDetail.directorList.length - index > 1">, </span>
+                        <span v-else >.</span>
+                </div>
+                <div class="detailTitle">Stars: 
+                    <span v-for="(star,index) in filmDetail.actorList" class="star" class="detailTitle" @click="showActor(star.id)" >
+                       <span> {{star.name}}</span>
+                    <span v-if="filmDetail.actorList.length - index > 1" >, </span>
+                        <span v-else >.</span>
+                    </span>
+                </div>
+            </section>
+        </div>
+        
+        <div class="filmReviews">
+            <div class="commentTitle">Comments:</div>
+            <div class="commentWrap">
+                <div v-for="review in reviews" class="detailTitle">
+                    {{review.username}}: <span>{{review.title}} ...</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div v-show="isActor === true" class="actorDetail filmDetail">
+        <div class="bigTitle">Actor Detail Information</div>
+        <div class="filmDetailInfo">
+            <img :src="actorDetail.image" alt="" class="filmDetailImg">
+            <section class="detail">
+                <div class="detailTitle">Name:
+                    <span>{{actorDetail.name}}.</span> </div>
+                <div class="detailTitle">Birth:
+                    <span> {{actorDetail.birthDate}}.</span> </div>
+                <div class="detailTitle">Death:
+                    <span> {{actorDetail.deathDate}}.</span> </div>
+                <div class="detailTitle">Height:
+                    <span>{{actorDetail.height}}.</span> </div>
+                <div class="detailTitle">Awards: 
+                    <span>{{actorDetail.awards}}.</span> </div>
+            </section>
+        </div>
+
+        </div>
+      <div v-show="isMain === true" id="main">
+        <div class="lastedMovies">
+          <div @click="prevLastedMovie" class="movieBtn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="1em"
+              viewBox="0 0 320 512"
+            >
+              <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+              <path
+                d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"
+              />
+            </svg>
+          </div>
+          <div v-if="lastedMovies" class="lastedMovieInfo" @click="showFilm(lastedMovies[lastedMoviesCurrentIndex])">
+            <img :src="imgLink" class="lastedMovieImg" alt="" />
+            <div class="lastedMovieName">
+              {{ fullTitle }} - {{ runtimeStr }}
+            </div>
+          </div>
+          <div @click="nextLastedMovie" class="movieBtn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="1em"
+              viewBox="0 0 320 512"
+            >
+              <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+              <path
+                d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <div class="mostPopular">
+          <div class="mainTitle">Most Popular</div>
+
+          <div class="pagination">
+            <div
+              class="paginationBtn"
+              v-for="page in displayedPages"
+              :key="page"
+              @click="goToPage(page)"
+              :class="{ pagActive: popularMoviesCurrentPage === page }"
+            ></div>
+          </div>
+
+          <div class="page3film">
+            <div @click="prevPopularPage" class="movieBtn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="1em"
+                viewBox="0 0 320 512"
+              >
+                <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path
+                  d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"
+                />
+              </svg>
+            </div>
+
+            <div
+              v-for="movie in popularMovies"
+              class="popularMovieInfo"
+              :key="movie.id"
+              @click="showFilm(movie)"
+            >
+              <img :src="movie.image" class="popularMovieImg" alt="" />
+              <div class="popularMovieName">{{ movie.fullTitle }}</div>
+            </div>
+
+            <div @click="nextPopularPage" class="movieBtn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="1em"
+                viewBox="0 0 320 512"
+              >
+                <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path
+                  d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"
+                />
+              </svg>
+            </div>
+          </div>
+
+      
+        </div>
+     
+    
+        <div class="topRating">
+            <div class="mainTitle">Top Rating</div>
+  
+            <div class="pagination">
+              <div
+                class="paginationBtn"
+                v-for="page in displayedRatingPages"
+                :key="page"
+                @click="goToRatingPage(page)"
+                :class="{ pagActive: moviesCurrentPage === page }"
+              ></div>
+            </div>
+  
+            <div class="page3film">
+              <div @click="prevRatingPage" class="movieBtn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1em"
+                  viewBox="0 0 320 512"
+                >
+                  <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"
+                  />
+                </svg>
+              </div>
+  
+              <div
+                v-for="movie in movies"
+                class="popularMovieInfo"
+                :key="movie.id"
+                @click="showFilm(movie)"
+              >
+                <img :src="movie.image" class="popularMovieImg" alt="" />
+                <div class="popularMovieName">{{ movie.fullTitle }}</div>
+              </div>
+  
+              <div @click="nextRatingPage" class="movieBtn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1em"
+                  viewBox="0 0 320 512"
+                >
+                  <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+ 
+
+      
+    </div>
+
+    <div id="footer">footer</div>
+    </div>
+  </body>
+</html>
